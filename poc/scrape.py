@@ -1,0 +1,109 @@
+from openai import OpenAI
+from dotenv import load_dotenv
+import os
+from playwright.sync_api import sync_playwright
+from bs4 import BeautifulSoup
+import json
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Initialize the OpenAI client
+client = OpenAI()
+
+def fetch(url):
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
+        try:
+            page.goto(url, wait_until="domcontentloaded")
+            html = page.content()
+        finally:
+            browser.close()
+
+    soup = BeautifulSoup(html, 'html.parser')
+
+    # Remove script and style elements
+    for element in soup(["script", "style"]):
+        element.decompose()
+
+    # Get text and clean it up
+    text = soup.get_text()
+    lines = (line.strip() for line in text.splitlines())
+    chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+    cleaned_text = '\n'.join(chunk for chunk in chunks if chunk)
+
+    return cleaned_text
+
+def parse(cleaned_text):
+
+    # Get the directory of the current script
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    # Construct the full path to the system prompt file
+    file_path = os.path.join(script_dir, 'system_prompt.txt')
+
+    # Read the system prompt from the file
+    with open(file_path, 'r') as f:
+        system_prompt = f.read()
+
+    # Create a chat completion using the OpenAI API
+    chat_completion = client.chat.completions.create(
+        messages=[
+            {
+                "role": "system",
+                "content": system_prompt,
+            },
+            {
+                "role" : "user",
+                "content" : "CAREERS PAGE:\n" + cleaned_text
+            }
+        ],
+        model="gpt-4o-mini",
+    )
+
+    return json.loads(chat_completion.choices[0].message.content)
+
+def scrape_all_pages(base_url):
+
+    all_jobs = []
+    i = 1
+
+    while True:
+        try:
+            # Construct the URL for the current page
+            if i == 1:
+                paginated_url = base_url
+            else:
+                paginated_url = f"{base_url}&page={i}"
+            print(f"Scraping page {i}: {paginated_url}")
+
+            # Fetch the cleaned text content of the page
+            cleaned_text = fetch(paginated_url)
+
+            # If the fetched text is empty or indicates no results, stop.
+            if not cleaned_text:
+                print("No more content found. Stopping.")
+                break
+
+            # Parse the text to get a list of job objects
+            jobs_on_page = parse(cleaned_text)
+
+            # If parsing returns an empty list, it means no more jobs were found
+            if not jobs_on_page:
+                print(f"Page {i} returned no jobs. Stopping.")
+                break
+
+            # Add the found jobs to the aggregate list
+            all_jobs.extend(jobs_on_page)
+            i += 1
+
+        except Exception as e:
+            # If any error occurs (e.g., network error, page not found), stop.
+            print(f"An error occurred on page {i}: {e}. Stopping.")
+            break
+
+    return all_jobs
+
+# Test scrape all pages
+all_results = scrape_all_pages("https://www.coinbase.com/en-ca/careers/positions?department=Internships%2520%2526%2520Emerging%2520Talent%2520Positions")
+print(json.dumps(all_results, indent=2))
