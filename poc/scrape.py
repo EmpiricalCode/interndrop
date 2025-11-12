@@ -129,5 +129,5 @@ def scrape_all_pages(base_url, max_pages=100):
     return all_jobs
 
 # Test scrape all pages
-all_results = scrape_all_pages("https://robinhood.com/us/en/careers/early-talent/")
+all_results = scrape_all_pages("https://www.coinbase.com/en-ca/careers/positions?department=Internships%2520%2526%2520Emerging%2520Talent%2520Positions")
 print(json.dumps(all_results, indent=2))
