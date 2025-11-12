@@ -4,6 +4,7 @@ import os
 from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
 import json
+from difflib import SequenceMatcher
 
 # Load environment variables from .env file
 load_dotenv()
@@ -63,12 +64,17 @@ def parse(cleaned_text):
 
     return json.loads(chat_completion.choices[0].message.content)
 
-def scrape_all_pages(base_url):
+def calculate_similarity(text1, text2):
+    """Calculate similarity ratio between two texts"""
+    return SequenceMatcher(None, text1, text2).ratio()
+
+def scrape_all_pages(base_url, max_pages=100):
 
     all_jobs = []
     i = 1
+    previous_content = None
 
-    while True:
+    while i <= max_pages:
         try:
             # Construct the URL for the current page
             if i == 1:
@@ -85,6 +91,14 @@ def scrape_all_pages(base_url):
                 print("No more content found. Stopping.")
                 break
 
+            # Check similarity with previous page
+            if previous_content is not None:
+                similarity = calculate_similarity(cleaned_text, previous_content)
+                print(f"Similarity with previous page: {similarity:.2%}")
+                if similarity > 0.98:
+                    print("Content is more than 98% similar to previous page. Stopping.")
+                    break
+
             # Parse the text to get a list of job objects
             jobs_on_page = parse(cleaned_text)
 
@@ -95,6 +109,9 @@ def scrape_all_pages(base_url):
 
             # Add the found jobs to the aggregate list
             all_jobs.extend(jobs_on_page)
+            
+            # Store current content for next iteration
+            previous_content = cleaned_text
             i += 1
 
         except Exception as e:
@@ -105,5 +122,5 @@ def scrape_all_pages(base_url):
     return all_jobs
 
 # Test scrape all pages
-all_results = scrape_all_pages("https://www.coinbase.com/en-ca/careers/positions?department=Internships%2520%2526%2520Emerging%2520Talent%2520Positions")
+all_results = scrape_all_pages("https://stripe.com/jobs/search?tags=University")
 print(json.dumps(all_results, indent=2))
