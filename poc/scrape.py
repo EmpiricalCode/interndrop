@@ -16,9 +16,16 @@ def fetch(url):
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=False)
         page = browser.new_page()
+        # Try networkidle for 10 seconds
         try:
-            page.goto(url, wait_until="networkidle")
+            page.goto(url, wait_until="networkidle", timeout=10000)
             html = page.content()
+        except:
+            # If it times out, just continue with what's loaded
+            print("Network idle timed out - continuing anyways")
+            html = page.content()
+            pass
+         
         finally:
             browser.close()
 
@@ -122,5 +129,5 @@ def scrape_all_pages(base_url, max_pages=100):
     return all_jobs
 
 # Test scrape all pages
-all_results = scrape_all_pages("https://stripe.com/jobs/search?tags=University")
+all_results = scrape_all_pages("https://robinhood.com/us/en/careers/early-talent/")
 print(json.dumps(all_results, indent=2))
