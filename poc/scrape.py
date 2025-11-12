@@ -13,10 +13,10 @@ client = OpenAI()
 
 def fetch(url):
     with sync_playwright() as p:
-        browser = p.chromium.launch()
+        browser = p.chromium.launch(headless=False)
         page = browser.new_page()
         try:
-            page.goto(url, wait_until="domcontentloaded")
+            page.goto(url, wait_until="networkidle")
             html = page.content()
         finally:
             browser.close()
