@@ -13,7 +13,7 @@ from src.core import HeadedScraper
 
 def test_coinbase_headed_scrape():
     """Test scraping Coinbase internship positions with headed browser."""
-    url = "https://www.coinbase.com/en-ca/careers/positions?department=Internships%2520%2526%2520Emerging%2520Talent%2520Positions"
+    url = "https://www.coinbase.com/careers/positions?department=Internships%2520%2526%2520Emerging%2520Talent%2520Positions"
 
     print("="*60)
     print("HEADED BROWSER TEST - Coinbase Internships")
