@@ -8,6 +8,7 @@ Rules:
 - Prefer normalized values when possible:
     - Normalize "date posted" and "expiration date" to ISO 8601 (YYYY-MM-DD) if you can parse them; if not parseable, place the original string. If not present, use "".
     - For "remote" set "yes" or "no" if explicitly indicated; otherwise "".
+- Location MUST be a list, even if there is only one location.
 - Try to extract a clear, concise "title".
 - Be thorough: scan all content, headings, meta, attributes, links, lists, tables, and repeated templates.
 - Output must be a valid JSON array of objects. No trailing commas. No extra keys. No commentary.
