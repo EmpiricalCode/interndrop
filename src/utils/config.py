@@ -24,7 +24,7 @@ class Config:
     _openai_client = None
 
     @classmethod
-    def get_openai_client(self) -> OpenAI:
+    def get_openai_client(cls) -> OpenAI:
         """
         Get or create OpenAI client (lazy singleton).
         Reuses the same client instance across the application.
@@ -35,14 +35,14 @@ class Config:
         Raises:
             ValueError: If OPENAI_API_KEY is not set
         """
-        if self._openai_client is None:
-            if not self.validate():
+        if cls._openai_client is None:
+            if not cls.OPENAI_API_KEY:
                 raise ValueError("OPENAI_API_KEY environment variable is required")
-            self._openai_client = OpenAI(api_key=self.OPENAI_API_KEY)
-        return self._openai_client
+            cls._openai_client = OpenAI(api_key=cls.OPENAI_API_KEY)
+        return cls._openai_client
 
     @classmethod
-    def validate(self):
+    def validate(cls):
         """Validate required configuration is present."""
-        if not self.OPENAI_API_KEY:
+        if not cls.OPENAI_API_KEY:
             raise ValueError("OPENAI_API_KEY environment variable is required")
