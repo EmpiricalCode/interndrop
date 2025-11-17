@@ -106,7 +106,7 @@ class BaseScraper(ABC):
         """
         return SequenceMatcher(None, text1, text2).ratio()
 
-    def scrape_all_pages(self, base_url: str, max_pages: int = None) -> list[dict]:
+    def scrape_all_pages(self, base_url: str, max_pages: int = None, page = "page") -> list[dict]:
         """
         Scrape all pages with pagination until no more jobs or duplicate pages found.
 
@@ -121,8 +121,8 @@ class BaseScraper(ABC):
             max_pages = Config.MAX_PAGES_PER_COMPANY
 
         all_jobs = []
+        seen_job_titles = set()
         i = 1
-        previous_content = None
 
         while i <= max_pages:
             try:
@@ -130,7 +130,7 @@ class BaseScraper(ABC):
                 if i == 1:
                     paginated_url = base_url
                 else:
-                    paginated_url = f"{base_url}&page={i}"
+                    paginated_url = f"{base_url}&{page}={i}"
                 print(f"Scraping page {i}: {paginated_url}")
 
                 # Fetch the cleaned text content of the page
@@ -141,13 +141,6 @@ class BaseScraper(ABC):
                     print("No more content found. Stopping.")
                     break
 
-                # Check similarity with previous page
-                if previous_content is not None:
-                    similarity = self.calculate_similarity(cleaned_text, previous_content)
-                    print(f"Similarity with previous page: {similarity:.2%}")
-                    if similarity > Config.PAGE_SIMILARITY_THRESHOLD:
-                        print(f"Content is more than {Config.PAGE_SIMILARITY_THRESHOLD:.0%} similar to previous page. Stopping.")
-                        break
 
                 # Parse the text to get a list of job objects
                 jobs_on_page = self.parse(cleaned_text)
@@ -156,12 +149,32 @@ class BaseScraper(ABC):
                 if not jobs_on_page:
                     print(f"Page {i} returned no jobs. Stopping.")
                     break
+                
+                # Check for similarity with the last page's content to detect duplicate pages
+                if i > 1 and self.calculate_similarity(cleaned_text, last_cleaned_text) > 0.98:
+                    print(f"Page {i} is too similar to the previous page. Stopping.")
+                    break
+                last_cleaned_text = cleaned_text
 
-                # Add the found jobs to the aggregate list
+                # Normalize and collect job titles from the current page
+                current_page_titles = {
+                    job['title'].lower().replace(' ', '')
+                    for job in jobs_on_page if 'title' in job
+                }
+
+                # If all jobs on the current page have been seen before, stop
+                if current_page_titles.issubset(seen_job_titles):
+                    print(f"Page {i} contains only duplicate jobs. Stopping.")
+                    break
+
+                # Add the found jobs to the aggregate list and update seen titles
                 all_jobs.extend(jobs_on_page)
+                seen_job_titles.update(current_page_titles)
 
-                # Store current content for next iteration
-                previous_content = cleaned_text
+                print(jobs_on_page)
+
+                print(f"Found {len(jobs_on_page)} jobs on page {i}.")
+
                 i += 1
 
             except Exception as e:
