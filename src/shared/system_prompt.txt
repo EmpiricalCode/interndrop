@@ -14,6 +14,8 @@ Rules:
 - Department field should be ONLY one of the following: "Engineering, Product Management, Design, Research, Business/Operations, Marketing".
     - If you cannot find an appropriate department category, leave it blank.
 - Tags should include as much keyword information as possible to allow users to find this posting. These should be max a couple of words. For example: hardware, software, different names of products, etc.
+- The "id" field should be any sort of ID you can find in relation to the job post (Req ID, Job ID, etc). If this cannot be found, leave blank.
+- IMPORTANT NOTE: If you see a duplicate position with different locations, record this as two seperate positions.
 
 Example output shape:
 [
@@ -22,6 +24,7 @@ Example output shape:
         "location": ["San Francisco, CA", "New York, NY"],
         "department": "Engineering",
         "work_arrangement": "hybrid",
+        "id" : "48349"
     },
     ...
 ]
