@@ -171,8 +171,6 @@ class BaseScraper(ABC):
                 all_jobs.extend(jobs_on_page)
                 seen_job_titles.update(current_page_titles)
 
-                print(jobs_on_page)
-
                 print(f"Found {len(jobs_on_page)} jobs on page {i}.")
 
                 i += 1
