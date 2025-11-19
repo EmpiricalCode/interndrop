@@ -17,6 +17,7 @@
 - Figma (https://www.figma.com/careers/#job-openings) (no pages)
 - Notion (https://www.notion.com/careers) (no pages)
 - Roblox (https://careers.roblox.com/jobs?groups=early-career-talent&type=internship) (pages, doesn't have page delimeter)
+- Rho (https://www.rho.co/careers) (no pages)
 
 # Not so nice:
 - Lockheed (Weird pages, sometimes gets 50+ jobs per page and sometimes not. Ended up with 150 scraped jobs even though )
