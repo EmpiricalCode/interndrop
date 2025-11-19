@@ -107,7 +107,7 @@ class BaseScraper(ABC):
         """
         return SequenceMatcher(None, text1, text2).ratio()
 
-    def scrape_all_pages(self, base_url: str, max_pages: int = None, page = "page", crawl_delay: int = None) -> list[dict]:
+    def scrape_all_pages(self, base_url: str, max_pages: int = None, page = "", crawl_delay: int = None) -> list[dict]:
         """
         Scrape all pages with pagination until no more jobs or duplicate pages found.
 
@@ -124,6 +124,8 @@ class BaseScraper(ABC):
             max_pages = Config.MAX_PAGES_PER_COMPANY
         if crawl_delay is None:
             crawl_delay = Config.CRAWL_DELAY
+        if not page:
+            max_pages = 1
 
         all_jobs = []
         seen_job_titles = set()
@@ -132,14 +134,14 @@ class BaseScraper(ABC):
         while i <= max_pages:
             try:
                 # Construct the URL for the current page
-                if i == 1:
-                    paginated_url = base_url
+                if not page:
+                    formatted_url = base_url
                 else:
-                    paginated_url = f"{base_url}&{page}={i}"
-                print(f"Scraping page {i}: {paginated_url}")
+                    formatted_url = f"{base_url}&{page}={i}"
+                print(f"Scraping page {i}: {formatted_url}")
 
                 # Fetch the cleaned text content of the page
-                cleaned_text = self.fetch(paginated_url)
+                cleaned_text = self.fetch(formatted_url)
 
                 # If the fetched text is empty or indicates no results, stop.
                 if not cleaned_text:
