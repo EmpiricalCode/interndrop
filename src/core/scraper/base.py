@@ -3,6 +3,7 @@ Base scraper class with common scraping logic.
 """
 import json
 from abc import ABC, abstractmethod
+import time
 from bs4 import BeautifulSoup
 from difflib import SequenceMatcher
 from pathlib import Path
@@ -106,19 +107,23 @@ class BaseScraper(ABC):
         """
         return SequenceMatcher(None, text1, text2).ratio()
 
-    def scrape_all_pages(self, base_url: str, max_pages: int = None, page = "page") -> list[dict]:
+    def scrape_all_pages(self, base_url: str, max_pages: int = None, page = "page", crawl_delay: int = None) -> list[dict]:
         """
         Scrape all pages with pagination until no more jobs or duplicate pages found.
 
         Args:
             base_url: Career page URL with optional pagination parameter
             max_pages: Maximum pages to scrape (defaults to Config.MAX_PAGES_PER_COMPANY)
+            page: The pagination parameter in the url
+            crawl_delay: Seconds to wait between requests (defaults to Config.CRAWL_DELAY)
 
         Returns:
             List of job dictionaries
         """
         if max_pages is None:
             max_pages = Config.MAX_PAGES_PER_COMPANY
+        if crawl_delay is None:
+            crawl_delay = Config.CRAWL_DELAY
 
         all_jobs = []
         seen_job_titles = set()
@@ -174,6 +179,11 @@ class BaseScraper(ABC):
                 print(f"Found {len(jobs_on_page)} jobs on page {i}.")
 
                 i += 1
+
+                # Wait before the next request to be polite
+                if i <= max_pages:
+                    print("Delaying...")
+                    time.sleep(crawl_delay)
 
             except Exception as e:
                 # If any error occurs (e.g., network error, page not found), stop.
