@@ -1,10 +1,10 @@
 # Nice Companies:
-- Robinhood
-- Coinbase
-- Stripe
-- Ramp
-- Anduril
-- Palantir
+- Robinhood (https://careers.robinhood.com/#page-block-mzzcf1eaais) (no pages)
+- Coinbase (https://www.coinbase.com/en-ca/careers/positions?department=Internships%2520%2526%2520Emerging%2520Talent%2520Positions) (no pages)
+- Stripe (https://stripe.com/jobs/search?tags=University) (no pages)
+- Ramp (https://ramp.com/emerging-talent#jobs) (no pages)
+- Anduril (https://www.anduril.com/open-roles/?location=&department=Internships&search=&gh_src=) (no pages)
+- Palantir (https://www.palantir.com/careers/open-positions/) (no pages)
 - Rippling (possible issue with multiple duplicate positions with diff locations - we record this as 1 position)
 - Wealthsimple (https://jobs.lever.co/wealthsimple) (no pages)  
 - ScaleAI (https://scale.com/careers) (no pages)
