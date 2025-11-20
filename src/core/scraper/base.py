@@ -139,7 +139,7 @@ class BaseScraper(ABC):
                     formatted_url = base_url
                 else:
                     formatted_url = f"{base_url}&{page}={i}"
-                print(f"Scraping page {i}: {formatted_url}")
+                print(f"Scraping page {i}: {formatted_url}\n")
 
                 # Fetch the cleaned text content of the page
                 cleaned_text = self.fetch(formatted_url)
@@ -179,13 +179,13 @@ class BaseScraper(ABC):
                 all_jobs.extend(jobs_on_page)
                 seen_job_titles.update(current_page_titles)
 
-                print(f"Found {len(jobs_on_page)} jobs on page {i}.")
+                print(f"Found {len(jobs_on_page)} jobs on page {i}.\n")
 
                 # Enforce minimum crawl delay: wait for the remaining time
                 elapsed_time = time.time() - loop_start_time
                 wait_time = max(0, min_crawl_delay - elapsed_time)
                 if wait_time > 0:
-                    print(f"Crawl delay: waiting {wait_time:.2f}s before next request...")
+                    print(f"Crawl delay: waiting {wait_time:.2f}s before next request...\n")
                     time.sleep(wait_time)
 
                 i += 1
