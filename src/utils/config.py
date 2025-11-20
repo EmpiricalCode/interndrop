@@ -19,7 +19,7 @@ class Config:
     MAX_PAGES_PER_COMPANY = int(os.getenv('MAX_PAGES_PER_COMPANY', 20))
     PAGE_SIMILARITY_THRESHOLD = float(os.getenv('PAGE_SIMILARITY_THRESHOLD', 0.8))
     FETCH_TIMEOUT_MS = int(os.getenv('FETCH_TIMEOUT_MS', 20000))
-    CRAWL_DELAY = int(os.getenv('CRAWL_DELAY', 10))
+    MIN_CRAWL_DELAY = int(os.getenv('MIN_CRAWL_DELAY', 10))
 
     # OpenAI client singleton
     _openai_client = None

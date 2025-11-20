@@ -107,7 +107,7 @@ class BaseScraper(ABC):
         """
         return SequenceMatcher(None, text1, text2).ratio()
 
-    def scrape_all_pages(self, base_url: str, max_pages: int = None, page = "", crawl_delay: int = None) -> list[dict]:
+    def scrape_all_pages(self, base_url: str, max_pages: int = None, page = "") -> list[dict]:
         """
         Scrape all pages with pagination until no more jobs or duplicate pages found.
 
@@ -122,16 +122,17 @@ class BaseScraper(ABC):
         """
         if max_pages is None:
             max_pages = Config.MAX_PAGES_PER_COMPANY
-        if crawl_delay is None:
-            crawl_delay = Config.CRAWL_DELAY
         if not page:
             max_pages = 1
+
+        min_crawl_delay = Config.MIN_CRAWL_DELAY
 
         all_jobs = []
         seen_job_titles = set()
         i = 1
 
         while i <= max_pages:
+            loop_start_time = time.time()
             try:
                 # Construct the URL for the current page
                 if not page:
@@ -156,7 +157,7 @@ class BaseScraper(ABC):
                 if not jobs_on_page:
                     print(f"Page {i} returned no jobs. Stopping.")
                     break
-                
+
                 # Check for similarity with the last page's content to detect duplicate pages
                 if i > 1 and self.calculate_similarity(cleaned_text, last_cleaned_text) > 0.98:
                     print(f"Page {i} is too similar to the previous page. Stopping.")
@@ -180,12 +181,14 @@ class BaseScraper(ABC):
 
                 print(f"Found {len(jobs_on_page)} jobs on page {i}.")
 
-                i += 1
+                # Enforce minimum crawl delay: wait for the remaining time
+                elapsed_time = time.time() - loop_start_time
+                wait_time = max(0, min_crawl_delay - elapsed_time)
+                if wait_time > 0:
+                    print(f"Crawl delay: waiting {wait_time:.2f}s before next request...")
+                    time.sleep(wait_time)
 
-                # Wait before the next request to be polite
-                if i <= max_pages:
-                    print("Delaying...")
-                    time.sleep(crawl_delay)
+                i += 1
 
             except Exception as e:
                 # If any error occurs (e.g., network error, page not found), stop.
