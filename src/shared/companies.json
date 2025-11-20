@@ -1,0 +1,148 @@
+{
+  "companies": [
+    {
+      "name": "Robinhood",
+      "url": "https://careers.robinhood.com/#page-block-mzzcf1eaais",
+      "paged": false,
+      "page_query_param": null
+    },
+    {
+      "name": "Coinbase",
+      "url": "https://www.coinbase.com/en-ca/careers/positions?department=Internships%2520%2526%2520Emerging%2520Talent%2520Positions",
+      "paged": false,
+      "page_query_param": null
+    },
+    {
+      "name": "Stripe",
+      "url": "https://stripe.com/jobs/search?tags=University",
+      "paged": false,
+      "page_query_param": null
+    },
+    {
+      "name": "Ramp",
+      "url": "https://ramp.com/emerging-talent#jobs",
+      "paged": false,
+      "page_query_param": null
+    },
+    {
+      "name": "Anduril",
+      "url": "https://www.anduril.com/open-roles/?location=&department=Internships&search=&gh_src=",
+      "paged": false,
+      "page_query_param": null
+    },
+    {
+      "name": "Palantir",
+      "url": "https://www.palantir.com/careers/open-positions/",
+      "paged": false,
+      "page_query_param": null
+    },
+    {
+      "name": "Rippling",
+      "url": "https://www.rippling.com/careers",
+      "paged": false,
+      "page_query_param": null
+    },
+    {
+      "name": "Wealthsimple",
+      "url": "https://jobs.lever.co/wealthsimple",
+      "paged": false,
+      "page_query_param": null
+    },
+    {
+      "name": "Scale AI",
+      "url": "https://scale.com/careers",
+      "paged": false,
+      "page_query_param": null
+    },
+    {
+      "name": "Databricks",
+      "url": "https://www.databricks.com/company/careers/open-positions",
+      "paged": false,
+      "page_query_param": null
+    },
+    {
+      "name": "Snowflake",
+      "url": "https://careers.snowflake.com/us/en/university",
+      "paged": false,
+      "page_query_param": null
+    },
+    {
+      "name": "Cohere",
+      "url": "https://jobs.ashbyhq.com/cohere?employmentType=Intern",
+      "paged": false,
+      "page_query_param": null
+    },
+    {
+      "name": "Figure",
+      "url": "https://www.figure.ai/careers",
+      "paged": false,
+      "page_query_param": null
+    },
+    {
+      "name": "Replit",
+      "url": "https://jobs.ashbyhq.com/replit",
+      "paged": false,
+      "page_query_param": null
+    },
+    {
+      "name": "GitHub",
+      "url": "https://www.github.careers/careers-home/jobs?keywords=intern&sortBy=relevance&limit=100",
+      "paged": false,
+      "page_query_param": null
+    },
+    {
+      "name": "Figma",
+      "url": "https://www.figma.com/careers/#job-openings",
+      "paged": false,
+      "page_query_param": null
+    },
+    {
+      "name": "Notion",
+      "url": "https://www.notion.com/careers",
+      "paged": false,
+      "page_query_param": null
+    },
+    {
+      "name": "Roblox",
+      "url": "https://careers.roblox.com/jobs?groups=early-career-talent&type=internship",
+      "paged": false,
+      "page_query_param": null
+    },
+    {
+      "name": "Rho",
+      "url": "https://www.rho.co/careers",
+      "paged": false,
+      "page_query_param": null
+    },
+    {
+      "name": "Jane Street",
+      "url": "https://www.janestreet.com/join-jane-street/open-roles/?type=internship&location=all-locations",
+      "paged": false,
+      "page_query_param": null
+    },
+    {
+      "name": "Fizz",
+      "url": "https://jobs.ashbyhq.com/fizz",
+      "paged": false,
+      "page_query_param": null
+    },
+    {
+      "name": "Intuit",
+      "url": "https://jobs.intuit.com/category/internship-jobs/27595/9205024/1",
+      "paged": true,
+      "page_query_param": null
+    },
+    {
+      "name": "Citadel",
+      "url": "https://www.citadel.com/careers/open-opportunities?experience-filter=internships&selected-job-sections=388,389,387,390&sort_order=DESC&per_page=10&action=careers_listing_filter",
+      "paged": true,
+      "page_query_param": "current_page"
+    },
+    {
+      "name": "Block",
+      "url": "https://block.xyz/careers/jobs?businessUnits[]=block&employeeTypes[]=Intern&query=intern",
+      "paged": false,
+      "page_query_param": null
+    }
+  ]
+}
