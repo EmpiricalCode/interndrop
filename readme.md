@@ -9,7 +9,6 @@
 - Wealthsimple (https://jobs.lever.co/wealthsimple) (no pages)  
 - ScaleAI (https://scale.com/careers) (no pages)
 - Databricks (https://www.databricks.com/company/careers/open-positions) (no pages)
-- Snowflake (https://careers.snowflake.com/us/en/university) (no pages)
 - Cohere (https://jobs.ashbyhq.com/cohere?employmentType=Intern) (no pages)
 - Figure (https://www.figure.ai/careers) (no pages)
 - Replit (https://jobs.ashbyhq.com/replit) (no pages)
