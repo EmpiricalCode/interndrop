@@ -22,11 +22,11 @@ def test_headed_scrape(url: str):
     print("="*60)
     print("HEADED BROWSER TEST")
     print("="*60)
-    print("\nInitializing HeadedScraper (visible browser)...")
+    print("\nInitializing HeadedScraper (visible browser)...\n")
     scraper = HeadedScraper()
 
     print(f"Scraping: {url}\n")
-    jobs = scraper.scrape_all_pages(url)
+    jobs = scraper.scrape_all_pages(url, page="current_page")
 
     print(f"\n{'='*60}")
     print(f"RESULTS: {len(jobs)} jobs found")
@@ -43,7 +43,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "url",
         nargs="?",
-        default="https://www.coinbase.com/careers/positions?department=Internships%2520%2526%2520Emerging%2520Talent%2520Positions",
+        default="https://www.citadel.com/careers/open-opportunities?experience-filter=internships&selected-job-sections=388,389,387,390&sort_order=DESC&per_page=10&action=careers_listing_filter",
         help="URL of the careers page to scrape (defaults to Coinbase internships)"
     )
 
