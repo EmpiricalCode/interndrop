@@ -61,12 +61,6 @@
       "page_query_param": null
     },
     {
-      "name": "Snowflake",
-      "url": "https://careers.snowflake.com/us/en/university",
-      "paged": false,
-      "page_query_param": null
-    },
-    {
       "name": "Cohere",
       "url": "https://jobs.ashbyhq.com/cohere?employmentType=Intern",
       "paged": false,
