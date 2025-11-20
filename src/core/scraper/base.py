@@ -184,7 +184,7 @@ class BaseScraper(ABC):
                 # Enforce minimum crawl delay: wait for the remaining time
                 elapsed_time = time.time() - loop_start_time
                 wait_time = max(0, min_crawl_delay - elapsed_time)
-                if wait_time > 0:
+                if wait_time > 0 and i < max_pages:
                     print(f"Crawl delay: waiting {wait_time:.2f}s before next request...\n")
                     time.sleep(wait_time)
 
