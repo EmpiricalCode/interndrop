@@ -26,7 +26,7 @@
     },
     {
       "name": "Anduril",
-      "url": "https://www.anduril.com/open-roles/?location=&department=Internships&search=&gh_src=",
+      "url": "https://www.anduril.com/open-roles?employmentType=intern&",
       "paged": false,
       "page_query_param": null
     },
