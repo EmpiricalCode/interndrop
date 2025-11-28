@@ -143,6 +143,12 @@
       "url" : "https://job-boards.greenhouse.io/affirm/?keyword=intern",
       "paged" : true,
       "page_query_param": "page"
+    },
+    {
+      "name" : "Whatnot",
+      "url" : "https://jobs.ashbyhq.com/whatnot/",
+      "paged" : false,
+      "page_query_param" : null
     }
   ]
 }

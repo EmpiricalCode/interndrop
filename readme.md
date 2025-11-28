@@ -23,6 +23,7 @@
 - Citadel (https://www.citadel.com/careers/open-opportunities?experience-filter=internships&selected-job-sections=388,389,387,390&sort_order=DESC&per_page=10&action=careers_listing_filter) (pages, page delimeter is current_page)
 - Block (https://block.xyz/careers/jobs?businessUnits[]=block&employeeTypes[]=Intern&query=intern) (no pages)
 - Affirm ([greenhouse pages](https://job-boards.greenhouse.io/affirm/?keyword=intern) (pages, ?page=)
+- Whatnot (https://jobs.ashbyhq.com/whatnot/) (no pages)
 
 # Not so nice:
 - Lockheed (Weird pages, sometimes gets 50+ jobs per page and sometimes not. Ended up with 150 scraped jobs even though )
