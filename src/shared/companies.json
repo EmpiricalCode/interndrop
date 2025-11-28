@@ -137,6 +137,12 @@
       "url": "https://block.xyz/careers/jobs?businessUnits[]=block&employeeTypes[]=Intern&query=intern",
       "paged": false,
       "page_query_param": null
+    },
+    {
+      "name" : "Affirm",
+      "url" : "https://job-boards.greenhouse.io/affirm/?keyword=intern",
+      "paged" : true,
+      "page_query_param": "page"
     }
   ]
 }
