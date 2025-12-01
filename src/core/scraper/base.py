@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 from difflib import SequenceMatcher
 from pathlib import Path
 from src.utils.config import Config
+from src.models.company import Company
 
 
 class BaseScraper(ABC):
@@ -107,22 +108,20 @@ class BaseScraper(ABC):
         """
         return SequenceMatcher(None, text1, text2).ratio()
 
-    def scrape_all_pages(self, base_url: str, max_pages: int = None, page = "") -> list[dict]:
+    def scrape_all_pages(self, company: Company, max_pages: int = None) -> list[dict]:
         """
         Scrape all pages with pagination until no more jobs or duplicate pages found.
 
         Args:
-            base_url: Career page URL with optional pagination parameter
+            company: Company object containing URL and pagination settings
             max_pages: Maximum pages to scrape (defaults to Config.MAX_PAGES_PER_COMPANY)
-            page: The pagination parameter in the url
-            crawl_delay: Seconds to wait between requests (defaults to Config.CRAWL_DELAY)
 
         Returns:
             List of job dictionaries
         """
         if max_pages is None:
             max_pages = Config.MAX_PAGES_PER_COMPANY
-        if not page:
+        if not company.paged:
             max_pages = 1
 
         min_crawl_delay = Config.MIN_CRAWL_DELAY
@@ -135,10 +134,10 @@ class BaseScraper(ABC):
             loop_start_time = time.time()
             try:
                 # Construct the URL for the current page
-                if not page:
-                    formatted_url = base_url
+                if not company.paged or not company.page_query_param:
+                    formatted_url = company.url
                 else:
-                    formatted_url = f"{base_url}&{page}={i}"
+                    formatted_url = f"{company.url}&{company.page_query_param}={i}"
                 print(f"Scraping page {i}: {formatted_url}\n")
 
                 # Fetch the cleaned text content of the page

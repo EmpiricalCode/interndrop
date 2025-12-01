@@ -11,8 +11,10 @@ sys.path.insert(0, str(project_root))
 import json
 import argparse
 from src.core import HeadedScraper
+from src.core.repository import CompanyRepository
+from src.models.company import Company
 
-def test_headed_scrape(url: str):
+def test_headed_scrape(company: Company):
     """
     Test scraping a careers page with headed browser.
 
@@ -25,8 +27,8 @@ def test_headed_scrape(url: str):
     print("\nInitializing HeadedScraper (visible browser)...\n")
     scraper = HeadedScraper()
 
-    print(f"Scraping: {url}\n")
-    jobs = scraper.scrape_all_pages(url, page="current_page")
+    print(f"Scraping: {company.url}\n")
+    jobs = scraper.scrape_all_pages(company)
 
     print(f"\n{'='*60}")
     print(f"RESULTS: {len(jobs)} jobs found")
@@ -41,11 +43,23 @@ if __name__ == "__main__":
         description="Test headed browser scraper on a careers page"
     )
     parser.add_argument(
-        "url",
+        "company_name",
         nargs="?",
-        default="https://www.citadel.com/careers/open-opportunities?experience-filter=internships&selected-job-sections=388,389,387,390&sort_order=DESC&per_page=10&action=careers_listing_filter",
-        help="URL of the careers page to scrape (defaults to Coinbase internships)"
+        default="Citadel",
+        help="Name of the company to scrape (defaults to Stripe)"
     )
 
     args = parser.parse_args()
-    test_headed_scrape(args.url)
+
+    # Load company from repository
+    company_repo = CompanyRepository()
+    company = company_repo.get_by_name(args.company_name)
+
+    if not company:
+        print(f"Error: Company '{args.company_name}' not found in companies.json")
+        print("\nAvailable companies:")
+        for c in company_repo.get_all():
+            print(f"  - {c.name}")
+        sys.exit(1)
+
+    test_headed_scrape(company)

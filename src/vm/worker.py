@@ -32,14 +32,8 @@ def scrape_all_companies():
     for company in companies:
         print(f"\nScraping {company.name}...")
         try:
-            # Determine pagination parameters
-            page_param = company.page_query_param if company.paged else ""
-
             # Scrape all pages for this company
-            job_dicts = scraper.scrape_all_pages(
-                base_url=company.url,
-                page=page_param
-            )
+            job_dicts = scraper.scrape_all_pages(company)
 
             # Convert job dicts to Job dataclass objects
             jobs = [Job(**job_dict) for job_dict in job_dicts]
