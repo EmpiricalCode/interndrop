@@ -34,9 +34,10 @@ def test_hash_consistency(company: Company):
     print(f"FIRST SCRAPE: {len(jobs_first)} jobs found")
     print(f"{'='*60}\n")
 
-    # Convert first scrape to Job objects and get hashes
+    # Convert first scrape to Job objects and create hash-to-job mapping
     first_jobs = [Job(**job) for job in jobs_first]
-    first_hashes = set(job.hash() for job in first_jobs)
+    first_hash_to_job = {job.hash(): job for job in first_jobs}
+    first_hashes = set(first_hash_to_job.keys())
 
     print(f"Waiting before second scrape...\n")
     print(f"Second scrape: {company.url}\n")
@@ -46,9 +47,10 @@ def test_hash_consistency(company: Company):
     print(f"SECOND SCRAPE: {len(jobs_second)} jobs found")
     print(f"{'='*60}\n")
 
-    # Convert second scrape to Job objects and get hashes
+    # Convert second scrape to Job objects and create hash-to-job mapping
     second_jobs = [Job(**job) for job in jobs_second]
-    second_hashes = set(job.hash() for job in second_jobs)
+    second_hash_to_job = {job.hash(): job for job in second_jobs}
+    second_hashes = set(second_hash_to_job.keys())
 
     # Compare hashes
     print(f"\n{'='*60}")
@@ -67,14 +69,24 @@ def test_hash_consistency(company: Company):
         only_in_second = second_hashes - first_hashes
 
         if only_in_first:
-            print(f"\n  Hashes only in first scrape ({len(only_in_first)}):")
+            print(f"\n  Jobs only in FIRST scrape ({len(only_in_first)}):")
             for hash_val in only_in_first:
-                print(f"    - {hash_val}")
+                job = first_hash_to_job[hash_val]
+                print(f"    - {job.title}")
+                print(f"      Location: {', '.join(job.location)}")
+                print(f"      Department: {job.department}")
+                print(f"      Hash: {hash_val}")
+                print()
 
         if only_in_second:
-            print(f"\n  Hashes only in second scrape ({len(only_in_second)}):")
+            print(f"\n  Jobs only in SECOND scrape ({len(only_in_second)}):")
             for hash_val in only_in_second:
-                print(f"    - {hash_val}")
+                job = second_hash_to_job[hash_val]
+                print(f"    - {job.title}")
+                print(f"      Location: {', '.join(job.location)}")
+                print(f"      Department: {job.department}")
+                print(f"      Hash: {hash_val}")
+                print()
 
     print(f"\n{'='*60}\n")
 
@@ -87,7 +99,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "company_name",
         nargs="?",
-        default="Citadel",
+        default="Stripe",
         help="Name of the company to scrape (defaults to Stripe)"
     )
 
