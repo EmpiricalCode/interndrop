@@ -8,6 +8,7 @@ class Job:
     location: list[str]
     department: str
     work_arrangement: str
+    href: str
     id: str = ""
 
     def __str__(self) -> str:
