@@ -30,27 +30,25 @@ def test_hash_consistency(company: Company):
     listing_scraper = ListingScraper(fetcher=fetcher)
 
     print(f"First scrape: {company.url}\n")
-    listings_first = listing_scraper.scrape_all_pages(company)
+    first_listings = listing_scraper.scrape_all_pages(company)
 
     print(f"\n{'='*60}")
-    print(f"FIRST SCRAPE: {len(listings_first)} listings found")
+    print(f"FIRST SCRAPE: {len(first_listings)} listings found")
     print(f"{'='*60}\n")
 
-    # Convert first scrape to Listing objects and create hash-to-listing mapping
-    first_listings = [Listing(**listing) for listing in listings_first]
+    # Create hash-to-listing mapping
     first_hash_to_listing = {listing.hash(): listing for listing in first_listings}
     first_hashes = set(first_hash_to_listing.keys())
 
     print(f"Waiting before second scrape...\n")
     print(f"Second scrape: {company.url}\n")
-    listings_second = listing_scraper.scrape_all_pages(company)
+    second_listings = listing_scraper.scrape_all_pages(company)
 
     print(f"\n{'='*60}")
-    print(f"SECOND SCRAPE: {len(listings_second)} listings found")
+    print(f"SECOND SCRAPE: {len(second_listings)} listings found")
     print(f"{'='*60}\n")
 
-    # Convert second scrape to Listing objects and create hash-to-listing mapping
-    second_listings = [Listing(**listing) for listing in listings_second]
+    # Create hash-to-listing mapping
     second_hash_to_listing = {listing.hash(): listing for listing in second_listings}
     second_hashes = set(second_hash_to_listing.keys())
 

@@ -36,7 +36,9 @@ def test_headed_scrape(company: Company):
     print(f"RESULTS: {len(listings)} listings found")
     print(f"{'='*60}\n")
 
-    print(json.dumps(listings, indent=2))
+    # Print listings using their __str__ method
+    for listing in listings:
+        print(f"  - {listing}")
 
     return listings
 

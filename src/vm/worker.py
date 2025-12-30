@@ -39,11 +39,8 @@ def scrape_all_companies(listing_queue):
     for company in companies:
         print(f"\nScraping {company.name}...")
         try:
-            # Scrape all pages for this company
-            listing_dicts = listing_scraper.scrape_all_pages(company)
-
-            # Convert listing dicts to Listing dataclass objects
-            listings = [Listing(**listing_dict) for listing_dict in listing_dicts]
+            # Scrape all pages for this company (returns Listing objects)
+            listings = listing_scraper.scrape_all_pages(company)
             num_listings += len(listings)
 
             # Enqueue listings for parsing

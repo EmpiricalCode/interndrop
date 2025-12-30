@@ -26,15 +26,16 @@ class ListingScraper:
         self.client = Config.get_openai_client()
         self.fetcher = fetcher
 
-    def parse(self, cleaned_text: str) -> list[dict]:
+    def parse(self, cleaned_text: str, company_name: str) -> list[Listing]:
         """
         Parse cleaned HTML text using OpenAI to extract job listings.
 
         Args:
             cleaned_text: Cleaned text content from the page
+            company_name: Name of the company for the listings
 
         Returns:
-            List of job dictionaries
+            List of Listing objects
         """
         # Get path to system prompt in src/shared/
         project_root = Path(__file__).parent.parent.parent
@@ -60,7 +61,22 @@ class ListingScraper:
             temperature=0
         )
 
-        return json.loads(chat_completion.choices[0].message.content)
+        # Parse JSON response and convert to Listing objects
+        job_dicts = json.loads(chat_completion.choices[0].message.content)
+        listings = []
+        for job_dict in job_dicts:
+            listing = Listing(
+                title=job_dict.get("title", ""),
+                location=job_dict.get("location", []),
+                department=job_dict.get("department", ""),
+                work_arrangement=job_dict.get("work_arrangement", ""),
+                href=job_dict.get("href", ""),
+                company=company_name,
+                id=job_dict.get("id", "")
+            )
+            listings.append(listing)
+
+        return listings
 
     def calculate_similarity(self, text1: str, text2: str) -> float:
         """
@@ -75,7 +91,7 @@ class ListingScraper:
         """
         return SequenceMatcher(None, text1, text2).ratio()
 
-    def scrape_all_pages(self, company: Company, max_pages: int = None) -> list[dict]:
+    def scrape_all_pages(self, company: Company, max_pages: int = None) -> list[Listing]:
         """
         Scrape all pages with pagination until no more jobs or duplicate pages found.
 
@@ -84,7 +100,7 @@ class ListingScraper:
             max_pages: Maximum pages to scrape (defaults to Config.MAX_PAGES_PER_COMPANY)
 
         Returns:
-            List of job dictionaries
+            List of Listing objects
         """
         if self.fetcher is None:
             raise ValueError("Fetcher instance is required to scrape all pages")
@@ -118,8 +134,8 @@ class ListingScraper:
                     print("No more content found. Stopping.")
                     break
 
-                # Parse the text to get a list of job objects
-                jobs_on_page = self.parse(cleaned_text)
+                # Parse the text to get a list of Listing objects
+                jobs_on_page = self.parse(cleaned_text, company.name)
 
                 # If parsing returns an empty list, it means no more jobs were found
                 if not jobs_on_page:
@@ -134,8 +150,8 @@ class ListingScraper:
 
                 # Normalize and collect job titles from the current page
                 current_page_titles = {
-                    job['title'].lower().replace(' ', '')
-                    for job in jobs_on_page if 'title' in job
+                    job.title.lower().replace(' ', '')
+                    for job in jobs_on_page
                 }
 
                 # If all jobs on the current page have been seen before, stop
