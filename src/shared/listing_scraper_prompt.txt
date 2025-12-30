@@ -16,6 +16,8 @@ Rules:
 - Tags should include as much keyword information as possible to allow users to find this posting. These should be max a couple of words. For example: hardware, software, different names of products, etc.
 - The "id" field should be any sort of ID you can find in relation to the job post (Req ID, Job ID, etc). If this cannot be found, leave blank.
 - The "href" field should be the content of the most relevant/nearest (HREF: ...) descriptor in the given input around the job you're processing. If you can't locate a suitable HREF, leave this blank.
+    - If it's a URL, set "href_is_url" to true. If it's a path (eg. "/jobs/123"), set "href_is_url": to false.
+    - The "href" field should be the value of the href, whatever it may be (url or not).
 - IMPORTANT NOTE: If you see a duplicate position with different locations, record this as two seperate positions.
 
 Example output shape:
@@ -26,6 +28,7 @@ Example output shape:
         "department": "Engineering",
         "work_arrangement": "hybrid",
         "href": "https://jobs.ashbyhq.com/ramp/67fadb77-43d8-4449-954b-d4cf2c6d3b8b",
+        "href_is_url": true,
         "id" : "48349"
     },
     ...

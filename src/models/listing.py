@@ -9,6 +9,7 @@ class Listing:
     department: str
     work_arrangement: str
     href: str
+    href_is_url: bool
     company: str
     id: str = ""
 

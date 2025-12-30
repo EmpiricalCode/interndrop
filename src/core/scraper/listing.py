@@ -71,6 +71,7 @@ class ListingScraper:
                 department=job_dict.get("department", ""),
                 work_arrangement=job_dict.get("work_arrangement", ""),
                 href=job_dict.get("href", ""),
+                href_is_url=job_dict.get("href_is_url", True),
                 company=company_name,
                 id=job_dict.get("id", "")
             )
