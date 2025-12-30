@@ -1,7 +1,7 @@
 """
 Posting parser for processing job postings.
 """
-from src.models.job import Job
+from src.models.listing import Job
 
 
 class PostingScraper:

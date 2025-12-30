@@ -1,4 +1,4 @@
 from .company import Company
-from .job import Job
+from .listing import Listing
 
-__all__ = ["Company", "Job"]
+__all__ = ["Company", "Listing"]

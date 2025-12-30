@@ -21,6 +21,9 @@ class Config:
     FETCH_TIMEOUT_MS = int(os.getenv('FETCH_TIMEOUT_MS', 20000))
     MIN_CRAWL_DELAY = int(os.getenv('MIN_CRAWL_DELAY', 10))
 
+    # VM Configuration
+    THREAD_POOL_SIZE = int(os.getenv('THREAD_POOL_SIZE', 5))
+
     # OpenAI client singleton
     _openai_client = None
 

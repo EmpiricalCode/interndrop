@@ -3,7 +3,7 @@ import hashlib
 
 
 @dataclass
-class Job:
+class Listing:
     title: str
     location: list[str]
     department: str

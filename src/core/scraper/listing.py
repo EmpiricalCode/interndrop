@@ -5,19 +5,19 @@ import json
 import time
 from pathlib import Path
 from difflib import SequenceMatcher
-from src.models.job import Job
+from src.models.listing import Listing
 from src.models.company import Company
 from src.utils.config import Config
 
 
-class JobScraper:
+class ListingScraper:
     """
-    Parses job data dictionaries and converts them to Job objects.
+    Parses job data dictionaries and converts them to Listing objects.
     Also handles parsing cleaned HTML text using OpenAI to extract job listings.
     """
 
     def __init__(self, fetcher=None):
-        """Initialize the job parser.
+        """Initialize the listing scraper.
 
         Args:
             fetcher: Optional fetcher instance to use for scraping all pages.
@@ -38,7 +38,7 @@ class JobScraper:
         """
         # Get path to system prompt in src/shared/
         project_root = Path(__file__).parent.parent.parent
-        prompt_path = project_root / "shared" / "system_prompt.txt"
+        prompt_path = project_root / "shared" / "listing_scraper_prompt.txt"
 
         # Read the system prompt from the file
         with open(prompt_path, 'r') as f:

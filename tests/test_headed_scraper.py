@@ -11,7 +11,7 @@ sys.path.insert(0, str(project_root))
 import json
 import argparse
 from src.core.fetch import HeadedFetcher
-from src.core.scraper.job import JobScraper
+from src.core.scraper.listing import ListingScraper
 from src.core.repository import CompanyRepository
 from src.models.company import Company
 
@@ -27,18 +27,18 @@ def test_headed_scrape(company: Company):
     print("="*60)
     print("\nInitializing HeadedFetcher (visible browser)...\n")
     fetcher = HeadedFetcher()
-    job_scraper = JobScraper(fetcher=fetcher)
+    listing_scraper = ListingScraper(fetcher=fetcher)
 
     print(f"Scraping: {company.url}\n")
-    jobs = job_scraper.scrape_all_pages(company)
+    listings = listing_scraper.scrape_all_pages(company)
 
     print(f"\n{'='*60}")
-    print(f"RESULTS: {len(jobs)} jobs found")
+    print(f"RESULTS: {len(listings)} listings found")
     print(f"{'='*60}\n")
 
-    print(json.dumps(jobs, indent=2))
+    print(json.dumps(listings, indent=2))
 
-    return jobs
+    return listings
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
