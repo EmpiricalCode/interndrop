@@ -1,14 +1,14 @@
 """
-Headless browser scraper for standard websites.
+Headless browser fetcher for standard websites.
 """
 from playwright.sync_api import sync_playwright
-from src.core.scraper.base import BaseScraper
+from src.core.fetch.base import BaseFetcher
 from src.utils.config import Config
 
 
-class HeadlessScraper(BaseScraper):
+class HeadlessFetcher(BaseFetcher):
     """
-    Scraper using a headless (invisible) browser.
+    Fetcher using a headless (invisible) browser.
     """
 
     def fetch(self, url: str) -> str:

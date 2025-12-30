@@ -10,7 +10,8 @@ sys.path.insert(0, str(project_root))
 
 import json
 import argparse
-from src.core import HeadedScraper
+from src.core.fetch import HeadedFetcher
+from src.core.scraper.job import JobScraper
 from src.core.repository import CompanyRepository
 from src.models.company import Company
 
@@ -19,16 +20,17 @@ def test_headed_scrape(company: Company):
     Test scraping a careers page with headed browser.
 
     Args:
-        url: The careers page URL to scrape
+        company: The company object to scrape
     """
     print("="*60)
     print("HEADED BROWSER TEST")
     print("="*60)
-    print("\nInitializing HeadedScraper (visible browser)...\n")
-    scraper = HeadedScraper()
+    print("\nInitializing HeadedFetcher (visible browser)...\n")
+    fetcher = HeadedFetcher()
+    job_scraper = JobScraper(fetcher=fetcher)
 
     print(f"Scraping: {company.url}\n")
-    jobs = scraper.scrape_all_pages(company)
+    jobs = job_scraper.scrape_all_pages(company)
 
     print(f"\n{'='*60}")
     print(f"RESULTS: {len(jobs)} jobs found")

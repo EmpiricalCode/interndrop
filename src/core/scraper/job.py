@@ -1,82 +1,30 @@
 """
-Base scraper class with common scraping logic.
+Job parser for extracting job information from parsed data.
 """
 import json
-from abc import ABC, abstractmethod
 import time
-from bs4 import BeautifulSoup
-from difflib import SequenceMatcher
 from pathlib import Path
-from src.utils.config import Config
+from difflib import SequenceMatcher
+from src.models.job import Job
 from src.models.company import Company
+from src.utils.config import Config
 
 
-class BaseScraper(ABC):
+class JobScraper:
     """
-    Abstract base class for web scrapers.
-
-    Subclasses must implement the fetch() method to define
-    how pages are fetched (headed vs headless browser).
+    Parses job data dictionaries and converts them to Job objects.
+    Also handles parsing cleaned HTML text using OpenAI to extract job listings.
     """
 
-    def __init__(self):
-        """Initialize the scraper."""
+    def __init__(self, fetcher=None):
+        """Initialize the job parser.
+
+        Args:
+            fetcher: Optional fetcher instance to use for scraping all pages.
+                     Required if using scrape_all_pages method.
+        """
         self.client = Config.get_openai_client()
-
-    @abstractmethod
-    def fetch(self, url: str) -> str:
-        """
-        Fetch and clean HTML content from a URL.
-
-        Args:
-            url: The URL to fetch
-
-        Returns:
-            Cleaned text content from the page
-        """
-        pass
-
-    def clean_html(self, html: str) -> str:
-        """
-        Clean HTML and extract text content, including links with their hrefs.
-
-        Args:
-            html: Raw HTML content
-
-        Returns:
-            Cleaned text content with links formatted as "text (href)"
-        """
-        soup = BeautifulSoup(html, 'html.parser')
-
-        # Remove script and style elements
-        for element in soup(["script", "style"]):
-            element.decompose()
-
-        # This is so the LLM can extract links
-        # Replace <a> tags with "text (href)" format
-        for link in soup.find_all('a'):
-            href = link.get('href', '')
-            if href:
-                link_text = link.get_text(strip=True)
-                link.replace_with(f"{link_text} (HREF: {href})")
-
-        # Get text and clean it up
-        text = soup.get_text()
-
-        # Normalize Unicode punctuation to ASCII equivalents
-        text = text.replace('\u2013', '-')  # en dash
-        text = text.replace('\u2014', '-')  # em dash
-        text = text.replace('\u2018', "'")  # left single quote
-        text = text.replace('\u2019', "'")  # right single quote
-        text = text.replace('\u201c', '"')  # left double quote
-        text = text.replace('\u201d', '"')  # right double quote
-        text = text.replace('\u2026', '...')  # ellipsis
-
-        lines = (line.strip() for line in text.splitlines())
-        chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
-        cleaned_text = '\n'.join(chunk for chunk in chunks if chunk)
-
-        return cleaned_text
+        self.fetcher = fetcher
 
     def parse(self, cleaned_text: str) -> list[dict]:
         """
@@ -138,6 +86,9 @@ class BaseScraper(ABC):
         Returns:
             List of job dictionaries
         """
+        if self.fetcher is None:
+            raise ValueError("Fetcher instance is required to scrape all pages")
+
         if max_pages is None:
             max_pages = Config.MAX_PAGES_PER_COMPANY
         if not company.paged:
@@ -160,13 +111,12 @@ class BaseScraper(ABC):
                 print(f"Scraping page {i}: {formatted_url}\n")
 
                 # Fetch the cleaned text content of the page
-                cleaned_text = self.fetch(formatted_url)
+                cleaned_text = self.fetcher.fetch(formatted_url)
 
                 # If the fetched text is empty or indicates no results, stop.
                 if not cleaned_text:
                     print("No more content found. Stopping.")
                     break
-
 
                 # Parse the text to get a list of job objects
                 jobs_on_page = self.parse(cleaned_text)
@@ -214,3 +164,4 @@ class BaseScraper(ABC):
                 break
 
         return all_jobs
+

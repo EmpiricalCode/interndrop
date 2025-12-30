@@ -1,14 +1,14 @@
 """
-Headed (visible) browser scraper for sites requiring full browser.
+Headed (visible) browser fetcher for sites requiring full browser.
 """
 from playwright.sync_api import sync_playwright
-from src.core.scraper.base import BaseScraper
+from src.core.fetch.base import BaseFetcher
 from src.utils.config import Config
 
 
-class HeadedScraper(BaseScraper):
+class HeadedFetcher(BaseFetcher):
     """
-    Scraper using a headed (visible) browser.
+    Fetcher using a headed (visible) browser.
     """
 
     def fetch(self, url: str) -> str:

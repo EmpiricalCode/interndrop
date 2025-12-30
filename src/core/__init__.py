@@ -1,10 +1,10 @@
 """
-Core scraping logic - framework agnostic.
+Core fetching and scraping logic - framework agnostic.
 """
-from src.core.scraper import BaseScraper, HeadedScraper, HeadlessScraper
+from src.core.fetch import BaseFetcher, HeadedFetcher, HeadlessFetcher
 
 __all__ = [
-    'BaseScraper',
-    'HeadedScraper',
-    'HeadlessScraper',
+    'BaseFetcher',
+    'HeadedFetcher',
+    'HeadlessFetcher',
 ]

@@ -9,9 +9,10 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from src.core.scraper import HeadedScraper
+from src.core.fetch import HeadedFetcher
+from src.core.scraper.job import JobScraper
 from src.core.repository import CompanyRepository
-from src.models import Company, Job
+from src.models import Job
 
 def scrape_all_companies():
     """
@@ -20,20 +21,21 @@ def scrape_all_companies():
     TODO: Save into RDS
     """
     company_repo = CompanyRepository()
-    companies = company_repo.get_all()
+    companies = company_repo.get_all()[:3]
 
     print(f"Loaded {len(companies)} companies:")
     for company in companies:
         print(f"  - {company.name}")
 
-    scraper = HeadedScraper()
+    fetcher = HeadedFetcher()
+    job_scraper = JobScraper(fetcher=fetcher)
     all_jobs = []
 
     for company in companies:
         print(f"\nScraping {company.name}...")
         try:
             # Scrape all pages for this company
-            job_dicts = scraper.scrape_all_pages(company)
+            job_dicts = job_scraper.scrape_all_pages(company)
 
             # Convert job dicts to Job dataclass objects
             jobs = [Job(**job_dict) for job_dict in job_dicts]

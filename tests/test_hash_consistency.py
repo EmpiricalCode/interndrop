@@ -9,7 +9,8 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 import argparse
-from src.core import HeadedScraper
+from src.core.fetch import HeadedFetcher
+from src.core.scraper.job import JobScraper
 from src.core.repository import CompanyRepository
 from src.models.job import Job
 from src.models.company import Company
@@ -24,11 +25,12 @@ def test_hash_consistency(company: Company):
     print("="*60)
     print("HASH CONSISTENCY TEST")
     print("="*60)
-    print("\nInitializing HeadedScraper for first scrape...\n")
-    scraper = HeadedScraper()
+    print("\nInitializing HeadedFetcher for first scrape...\n")
+    fetcher = HeadedFetcher()
+    job_scraper = JobScraper(fetcher=fetcher)
 
     print(f"First scrape: {company.url}\n")
-    jobs_first = scraper.scrape_all_pages(company)
+    jobs_first = job_scraper.scrape_all_pages(company)
 
     print(f"\n{'='*60}")
     print(f"FIRST SCRAPE: {len(jobs_first)} jobs found")
@@ -41,7 +43,7 @@ def test_hash_consistency(company: Company):
 
     print(f"Waiting before second scrape...\n")
     print(f"Second scrape: {company.url}\n")
-    jobs_second = scraper.scrape_all_pages(company)
+    jobs_second = job_scraper.scrape_all_pages(company)
 
     print(f"\n{'='*60}")
     print(f"SECOND SCRAPE: {len(jobs_second)} jobs found")

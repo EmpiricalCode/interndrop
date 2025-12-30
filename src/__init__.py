@@ -1,12 +1,12 @@
 """
 InternDrop - Job scraper core library.
 """
-from src.core.scraper import BaseScraper, HeadedScraper, HeadlessScraper
+from src.core.fetch import BaseFetcher, HeadedFetcher, HeadlessFetcher
 from src.utils.config import Config
 
 __all__ = [
-    'BaseScraper',
-    'HeadedScraper',
-    'HeadlessScraper',
+    'BaseFetcher',
+    'HeadedFetcher',
+    'HeadlessFetcher',
     'Config',
 ]
