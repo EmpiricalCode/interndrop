@@ -67,6 +67,7 @@ class PostingScraper:
         # Handle salary which is now a nested dict with type and amount
         salary_info = posting_dict.get("salary", {"type": "none", "amount": 0})
         salary_amount = salary_info.get("amount", 0) if isinstance(salary_info, dict) else 0
+        salary_type = salary_info.get("type", "none") if isinstance(salary_info, dict) else "none"
 
         # Handle location which should be a list in the prompt response
         location = posting_dict.get("location", [])
@@ -76,13 +77,12 @@ class PostingScraper:
         term = posting_dict.get("term", [])
         term_str = ", ".join(term) if isinstance(term, list) else str(term)
 
-        print(posting_dict)
-
         posting = Posting(
             title=posting_dict.get("title", ""),
             location=location_str,
             work_arrangement=posting_dict.get("work_arrangement", ""),
             salary=salary_amount,
+            salary_type=salary_type,
             url=url,
             term=term_str,
             categories=posting_dict.get("categories", []),
@@ -115,8 +115,6 @@ class PostingScraper:
             base_url = f"{parsed.scheme}://{parsed.netloc}"
             url = base_url + listing.href
 
-        print(url)
-
         # If there's a URL, try to scrape it for detailed information
         if url:
             # Fetch the cleaned text content
@@ -125,7 +123,9 @@ class PostingScraper:
             if cleaned_text:
                 # Parse the text to get a detailed Posting object
                 try:
-                    return self.parse(cleaned_text, listing.company, url)
+                    posting = self.parse(cleaned_text, listing.company, url)
+                    posting.id = listing.hash()
+                    return posting
                 except Exception as e:
                     print(f"Error parsing posting from {url}: {e}")
                     # Fall through to create Posting from Listing data
@@ -136,8 +136,10 @@ class PostingScraper:
             location=", ".join(listing.location) if listing.location else "",
             work_arrangement=listing.work_arrangement,
             salary=0,  # No salary info available from listing
+            salary_type="none",  # No salary info available from listing
             url=listing.href or "",
             term="",  # No term info available from listing
             categories=[],  # No categories available from listing
-            company=listing.company
+            company=listing.company,
+            id=listing.hash()
         )
