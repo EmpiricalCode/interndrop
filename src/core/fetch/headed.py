@@ -11,7 +11,11 @@ class HeadedFetcher(BaseFetcher):
     Fetcher using a headed (visible) browser.
     """
 
-    def fetch(self, url: str) -> str:
+    def __init__(self):
+        """Initialize the headed fetcher."""
+        super().__init__()
+
+    def _fetch_impl(self, url: str) -> str:
         """
         Fetch HTML content using a visible browser.
 

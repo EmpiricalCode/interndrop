@@ -2,7 +2,6 @@
 Job parser for extracting job information from parsed data.
 """
 import json
-import time
 from pathlib import Path
 from difflib import SequenceMatcher
 from src.models.listing import Listing
@@ -111,14 +110,11 @@ class ListingScraper:
         if not company.paged:
             max_pages = 1
 
-        min_crawl_delay = Config.MIN_CRAWL_DELAY
-
         all_jobs = []
         seen_job_titles = set()
         i = 1
 
         while i <= max_pages:
-            loop_start_time = time.time()
             try:
                 # Construct the URL for the current page
                 if not company.paged or not company.page_query_param:
@@ -165,13 +161,6 @@ class ListingScraper:
                 seen_job_titles.update(current_page_titles)
 
                 print(f"Found {len(jobs_on_page)} jobs on page {i}.\n")
-
-                # Enforce minimum crawl delay: wait for the remaining time
-                elapsed_time = time.time() - loop_start_time
-                wait_time = max(0, min_crawl_delay - elapsed_time)
-                if wait_time > 0 and i < max_pages:
-                    print(f"Crawl delay: waiting {wait_time:.2f}s before next request...\n")
-                    time.sleep(wait_time)
 
                 i += 1
 

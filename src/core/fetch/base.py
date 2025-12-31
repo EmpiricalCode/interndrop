@@ -3,20 +3,59 @@ Base fetcher class with common fetching logic.
 """
 from abc import ABC, abstractmethod
 from bs4 import BeautifulSoup
+import time
+from src.utils.config import Config
 
 
 class BaseFetcher(ABC):
     """
     Abstract base class for web fetchers.
 
-    Subclasses must implement the fetch() method to define
+    Subclasses must implement the _fetch_impl() method to define
     how pages are fetched (headed vs headless browser).
     """
 
-    @abstractmethod
+    def __init__(self):
+        """Initialize the fetcher with rate limiting tracking."""
+        self._last_fetch_time = 0
+
     def fetch(self, url: str) -> str:
         """
-        Fetch and clean HTML content from a URL.
+        Fetch and clean HTML content from a URL with rate limiting.
+
+        This method enforces a minimum delay between fetches using
+        Config.MIN_CRAWL_DELAY to be respectful to servers.
+
+        Args:
+            url: The URL to fetch
+
+        Returns:
+            Cleaned text content from the page
+        """
+        # Calculate time since last fetch
+        time_since_last_fetch = time.time() - self._last_fetch_time
+
+        # If not enough time has passed, wait
+        if time_since_last_fetch < Config.MIN_CRAWL_DELAY:
+            print("Fetch delay...\n")
+            wait_time = Config.MIN_CRAWL_DELAY - time_since_last_fetch
+            time.sleep(wait_time)
+
+        # Perform the actual fetch
+        result = self._fetch_impl(url)
+
+        # Update last fetch time
+        self._last_fetch_time = time.time()
+
+        return result
+
+    @abstractmethod
+    def _fetch_impl(self, url: str) -> str:
+        """
+        Implementation-specific fetch logic.
+
+        Subclasses must implement this method to define
+        how pages are fetched (headed vs headless browser).
 
         Args:
             url: The URL to fetch
