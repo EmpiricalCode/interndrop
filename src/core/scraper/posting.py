@@ -2,6 +2,7 @@
 Posting parser for processing job postings.
 """
 import json
+import time
 from pathlib import Path
 from src.models.company import Company
 from src.models.posting import Posting
@@ -71,7 +72,6 @@ class PostingScraper:
 
         # Handle location which should be a list in the prompt response
         location = posting_dict.get("location", [])
-        location_str = ", ".join(location) if isinstance(location, list) else str(location)
 
         # Handle term which should be a list in the prompt response
         term = posting_dict.get("term", [])
@@ -79,14 +79,15 @@ class PostingScraper:
 
         posting = Posting(
             title=posting_dict.get("title", ""),
-            location=location_str,
+            location=location,
             work_arrangement=posting_dict.get("work_arrangement", ""),
             salary=salary_amount,
             salary_type=salary_type,
             url=url,
             term=term_str,
             categories=posting_dict.get("categories", []),
-            company=posting_dict.get("company", company_name) or company_name
+            company=posting_dict.get("company", company_name) or company_name,
+            fetched_at=int(time.time())
         )
 
         return posting
@@ -141,5 +142,6 @@ class PostingScraper:
             term="",  # No term info available from listing
             categories=[],  # No categories available from listing
             company=listing.company,
-            id=listing.hash()
+            id=listing.hash(),
+            fetched_at=int(time.time())
         )
