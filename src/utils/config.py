@@ -15,6 +15,10 @@ class Config:
     OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
     OPENAI_MODEL = os.getenv('OPENAI_MODEL', 'gpt-4o-mini')
 
+    # Supabase
+    SUPABASE_URL = os.getenv('SUPABASE_URL')
+    SUPABASE_KEY = os.getenv('SUPABASE_KEY')
+
     # Scraping Configuration
     MAX_PAGES_PER_COMPANY = int(os.getenv('MAX_PAGES_PER_COMPANY', 20))
     PAGE_SIMILARITY_THRESHOLD = float(os.getenv('PAGE_SIMILARITY_THRESHOLD', 0.8))
