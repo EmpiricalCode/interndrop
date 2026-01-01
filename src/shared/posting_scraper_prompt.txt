@@ -11,6 +11,7 @@ Rules:
         - Winter term starts in January
 - Try to extract a clear, concise "title".
 - Location should ALWAYS be a list, consisting of the locations that this posting is available for. This includes when there are no parsable locations or a single location.
+    - Locations in this list should ALWAYS follow the following format: CITY, ABBREVIATION_OF_STATE_OR_PROVINCE
 - For salary, include the type and amount. 
     - For the type, it must be one of the following categories: "hourly", "annually", "monthly", or "other" salary is not provided in one of these standardized categories.
     - For the amount, it must be an integer representing the amount of the salary.
