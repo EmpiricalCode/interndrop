@@ -74,8 +74,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "company_name",
         nargs="?",
-        default="Roblox",
-        help="Name of the company to scrape (defaults to Roblox)"
+        default="Ramp",
+        help="Name of the company to scrape (defaults to Ramp)"
     )
 
     args = parser.parse_args()
