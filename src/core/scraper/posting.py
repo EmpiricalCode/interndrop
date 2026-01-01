@@ -87,7 +87,7 @@ class PostingScraper:
             term=term_str,
             categories=posting_dict.get("categories", []),
             company=posting_dict.get("company", company_name) or company_name,
-            fetched_at=int(time.time())
+            date=int(time.time())
         )
 
         return posting
@@ -143,5 +143,5 @@ class PostingScraper:
             categories=[],  # No categories available from listing
             company=listing.company,
             id=listing.hash(),
-            fetched_at=int(time.time())
+            date=int(time.time())
         )

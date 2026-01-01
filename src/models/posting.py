@@ -15,8 +15,7 @@ class Posting:
     categories: list[str]
     company: str
     id: str = ""
-    fetched_at: int = 0
-    last_updated: int = 0
+    date: int = 0
 
     def __str__(self) -> str:
         categories_str = ", ".join(self.categories) if self.categories else "None"
@@ -25,7 +24,7 @@ class Posting:
 
         # Convert timestamp to EST date
         est_tz = ZoneInfo("America/New_York")
-        fetched_at_str = datetime.fromtimestamp(self.fetched_at, tz=est_tz).strftime("%Y-%m-%d") if self.fetched_at > 0 else "Not set"
+        date_str = datetime.fromtimestamp(self.date, tz=est_tz).strftime("%Y-%m-%d") if self.date > 0 else "Not set"
 
         return (
             f"Posting(\n"
@@ -38,6 +37,6 @@ class Posting:
             f"  term: {self.term}\n"
             f"  categories: [{categories_str}]\n"
             f"  url: {self.url}\n"
-            f"  date: {fetched_at_str}\n"
+            f"  date: {date_str}\n"
             f")"
         )
