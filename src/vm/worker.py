@@ -34,7 +34,7 @@ def scrape_all_companies(listing_queue: queue.Queue):
     TODO: Save into RDS
     """
     company_repo = CompanyRepository()
-    companies = company_repo.get_all()[:1]
+    companies = company_repo.get_all()
 
     print(f"Loaded {len(companies)} companies:")
     for company in companies:
