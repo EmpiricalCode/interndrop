@@ -36,7 +36,6 @@ class PostingRepository:
         """Get all postings from Supabase."""
         response = self.client.table(self.table_name).select("*").execute()
 
-        print(response)
         return [Posting(**self._normalize_posting_data(posting_dict)) for posting_dict in response.data]
 
     def get_by_id(self, posting_id: str) -> Posting | None:
@@ -46,3 +45,41 @@ class PostingRepository:
         if response.data and len(response.data) > 0:
             return Posting(**self._normalize_posting_data(response.data[0]))
         return None
+
+    def create(self, posting: Posting) -> Posting:
+        """Create a new posting in Supabase."""
+        # Convert Unix timestamp to ISO format for Supabase
+        date_iso = None
+        if posting.date > 0:
+            date_iso = datetime.fromtimestamp(posting.date).isoformat()
+
+        posting_dict = {
+            "id": posting.id,
+            "title": posting.title,
+            "location": posting.location,
+            "work_arrangement": posting.work_arrangement,
+            "salary": posting.salary,
+            "salary_type": posting.salary_type,
+            "url": posting.url,
+            "term": posting.term,
+            "categories": posting.categories,
+            "company": posting.company,
+            "date": date_iso,
+        }
+
+        response = self.client.table(self.table_name).insert(posting_dict).execute()
+
+        if response.data and len(response.data) > 0:
+            return Posting(**self._normalize_posting_data(response.data[0]))
+        return posting
+
+    def bulk_delete(self, posting_ids: list[str], batch_size: int = 1000) -> int:
+        """Delete multiple postings by IDs in batches."""
+        total_deleted = 0
+
+        for i in range(0, len(posting_ids), batch_size):
+            batch = posting_ids[i:i + batch_size]
+            response = self.client.table(self.table_name).delete().in_("id", batch).execute()
+            total_deleted += len(response.data)
+
+        return total_deleted

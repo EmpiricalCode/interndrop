@@ -72,7 +72,6 @@ class ListingScraper:
                 href=job_dict.get("href", ""),
                 href_is_url=job_dict.get("href_is_url", True),
                 company=company_name,
-                id=job_dict.get("id", "")
             )
             listings.append(listing)
 

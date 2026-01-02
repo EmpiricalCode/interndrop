@@ -11,7 +11,6 @@ class Listing:
     href: str
     href_is_url: bool
     company: str
-    id: str = ""
 
     def __str__(self) -> str:
         locations_str = ", ".join(self.location)

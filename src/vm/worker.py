@@ -4,6 +4,7 @@ VM Scraping Worker Module
 
 import queue
 import sys
+import time
 from pathlib import Path
 import threading
 from concurrent.futures import ThreadPoolExecutor
@@ -17,7 +18,7 @@ from src.core.fetch.base import BaseFetcher
 from src.core.fetch import HeadedFetcher
 from src.core.scraper.posting import PostingScraper
 from src.core.scraper.listing import ListingScraper
-from src.core.repository import CompanyRepository
+from src.core.repository import CompanyRepository, PostingRepository
 from src.models.company import Company
 from src.models import Listing
 from src.utils.config import Config
@@ -33,7 +34,7 @@ def scrape_all_companies(listing_queue: queue.Queue):
     TODO: Save into RDS
     """
     company_repo = CompanyRepository()
-    companies = company_repo.get_all()
+    companies = company_repo.get_all()[:1]
 
     print(f"Loaded {len(companies)} companies:")
     for company in companies:
@@ -83,8 +84,18 @@ def parse_all_listings(listing_queue: queue.Queue):
     """
     print(f"\nStarting single-threaded parse worker...\n")
 
-    # Create a fetcher instance
+    # Create a fetcher instance and repository
     fetcher = HeadedFetcher()
+    posting_repo = PostingRepository()
+
+    # Fetch all existing postings from database
+    print("Fetching all existing postings from database...")
+    existing_postings = posting_repo.get_all()
+    existing_postings_map = {posting.id: posting for posting in existing_postings}
+    print(f"Found {len(existing_postings)} existing postings in database\n")
+
+    # Track all listing IDs that were processed
+    processed_listing_ids = set()
 
     while True:
         item = listing_queue.get()
@@ -96,20 +107,36 @@ def parse_all_listings(listing_queue: queue.Queue):
 
         company, listing = item
 
-        # Parse the listing
-        parse_listing(company, listing, fetcher)
+        # Generate the posting ID (same way the scraper does it)
+        posting_id = listing.hash()
+
+        # Check if posting ID already exists in database
+        if posting_id in existing_postings_map:
+            print(f"✓ Posting already exists: {posting_id}")
+        else:
+            # Parse the listing and create new posting
+            parse_listing(company, listing, fetcher, posting_repo)
+        
+        processed_listing_ids.add(posting_id)
+
+    # Delete postings that were not in the processed list
+    posting_ids_to_delete = [posting.id for posting in existing_postings if posting.id not in processed_listing_ids]
+    if posting_ids_to_delete:
+        print(f"\nDeleting {len(posting_ids_to_delete)} postings that are no longer in listings...")
+        deleted_count = posting_repo.bulk_delete(posting_ids_to_delete)
+        print(f"✓ Deleted {deleted_count} postings from database")
 
     print("All parsing tasks completed.")
 
-def parse_listing(company: Company, listing: Listing, fetcher: BaseFetcher):
+def parse_listing(company: Company, listing: Listing, fetcher: BaseFetcher, posting_repo: PostingRepository):
     """
-    Parse a single listing and write the posting output to a text file for debugging.
-    Each posting is saved in a separate file named by its hash ID.
+    Parse a single listing and create a new posting in the database.
 
     Args:
         company: Company object associated with the listing
         listing: Listing object to parse
         fetcher: Fetcher instance for fetching
+        posting_repo: PostingRepository instance for database operations
     """
     try:
         # Use the fetcher instance
@@ -120,29 +147,9 @@ def parse_listing(company: Company, listing: Listing, fetcher: BaseFetcher):
         # Scrape the posting
         posting = posting_scraper.scrape(listing, company)
 
-        # TEMPORARY: Create output directory and save to file for debugging
-        output_dir = project_root / "output" / "postings"
-        output_dir.mkdir(parents=True, exist_ok=True)
-
-        filename = f"{posting.id}.txt" if posting.id else f"{listing.hash()}.txt"
-        output_path = output_dir / filename
-
-        # Write posting data to text file
-        with open(output_path, 'w', encoding='utf-8') as f:
-            f.write(f"POSTING DETAILS\n")
-            f.write(f"{'=' * 80}\n\n")
-            f.write(f"ID: {posting.id}\n")
-            f.write(f"Title: {posting.title}\n")
-            f.write(f"Company: {posting.company}\n")
-            f.write(f"Location: {posting.location}\n")
-            f.write(f"Work Arrangement: {posting.work_arrangement}\n")
-            f.write(f"Salary: ${posting.salary} ({posting.salary_type})\n")
-            f.write(f"Term: {posting.term}\n")
-            f.write(f"Categories: {', '.join(posting.categories) if posting.categories else 'None'}\n")
-            f.write(f"URL: {posting.url}\n")
-            f.write(f"\n{'=' * 80}\n")
-
-        print(f"✓ Saved: {filename}")
+        # Create the posting in the database
+        posting_repo.create(posting)
+        print(f"✓ Created new posting: {posting.id}")
 
     except Exception as e:
         print(f"✗ Error parsing {listing.title}: {e}")
