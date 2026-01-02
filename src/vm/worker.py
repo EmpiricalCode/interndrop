@@ -88,11 +88,12 @@ def parse_all_listings(listing_queue: queue.Queue):
     fetcher = HeadedFetcher()
     posting_repo = PostingRepository()
 
-    # Fetch all existing postings from database
-    print("Fetching all existing postings from database...")
+    # Fetch all existing posting IDs from database
+    print("Fetching all existing posting IDs from database...")
     existing_postings = posting_repo.get_all()
-    existing_postings_map = {posting.id: posting for posting in existing_postings}
-    print(f"Found {len(existing_postings)} existing postings in database\n")
+    existing_posting_ids = {posting.id for posting in existing_postings}
+    del existing_postings  # Free memory - we only need the IDs
+    print(f"Found {len(existing_posting_ids)} existing postings in database\n")
 
     # Track all listing IDs that were processed
     processed_listing_ids = set()
@@ -111,7 +112,7 @@ def parse_all_listings(listing_queue: queue.Queue):
         posting_id = listing.hash()
 
         # Check if posting ID already exists in database
-        if posting_id in existing_postings_map:
+        if posting_id in existing_posting_ids:
             print(f"✓ Posting already exists: {posting_id}")
         else:
             # Parse the listing and create new posting
