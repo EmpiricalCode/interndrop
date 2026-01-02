@@ -125,7 +125,7 @@ def parse_all_listings(listing_queue: queue.Queue, fetcher: BaseFetcher):
         processed_listing_ids.add(posting_id)
 
     # Delete postings that were not in the processed list
-    posting_ids_to_delete = [posting.id for posting in existing_postings if posting.id not in processed_listing_ids]
+    posting_ids_to_delete = [posting_id for posting_id in existing_posting_ids if posting_id not in processed_listing_ids]
     if posting_ids_to_delete:
         print(f"\nDeleting {len(posting_ids_to_delete)} postings that are no longer in listings...")
         deleted_count = posting_repo.bulk_delete(posting_ids_to_delete)
