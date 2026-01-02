@@ -25,11 +25,15 @@ from src.utils.config import Config
 
 listing_queue = queue.Queue()
 
-def scrape_all_companies(listing_queue: queue.Queue):
+def scrape_all_companies(listing_queue: queue.Queue, fetcher: BaseFetcher):
     """
     Scrapes all companies listed in the shared companies.json file,
     adding scraped listings to the provided listing queue.
     Uses multi-threading to scrape multiple companies concurrently.
+
+    Args:
+        listing_queue: Queue to add scraped listings to
+        fetcher: Shared fetcher instance for all threads
 
     TODO: Save into RDS
     """
@@ -41,9 +45,6 @@ def scrape_all_companies(listing_queue: queue.Queue):
         print(f"  - {company.name}")
 
     print(f"\nStarting company scraper pool with {Config.THREAD_POOL_SIZE} threads...\n")
-
-    # Shared fetcher instance for all threads
-    shared_fetcher = HeadedFetcher()
     num_listings = 0
     num_listings_lock = threading.Lock()
 
@@ -53,7 +54,7 @@ def scrape_all_companies(listing_queue: queue.Queue):
         try:
             print(f"[Thread {threading.current_thread().name}] Scraping {company.name}...")
 
-            listing_scraper = ListingScraper(fetcher=shared_fetcher)
+            listing_scraper = ListingScraper(fetcher=fetcher)
             listings = listing_scraper.scrape_all_pages(company)
 
             # Update listing count
@@ -77,15 +78,18 @@ def scrape_all_companies(listing_queue: queue.Queue):
 
     print(f"\n\nTotal listings scraped: {num_listings}")
 
-def parse_all_listings(listing_queue: queue.Queue):
+def parse_all_listings(listing_queue: queue.Queue, fetcher: BaseFetcher):
     """
     Parse all listings from the listing queue.
     Single-threaded approach for processing postings sequentially.
+
+    Args:
+        listing_queue: Queue containing listings to parse
+        fetcher: Shared fetcher instance
     """
     print(f"\nStarting single-threaded parse worker...\n")
 
-    # Create a fetcher instance and repository
-    fetcher = HeadedFetcher()
+    # Create repository
     posting_repo = PostingRepository()
 
     # Fetch all existing posting IDs from database
@@ -156,9 +160,11 @@ def parse_listing(company: Company, listing: Listing, fetcher: BaseFetcher, post
         print(f"✗ Error parsing {listing.title}: {e}")
 
 if __name__ == "__main__":
+    # Create single shared fetcher instance
+    shared_fetcher = HeadedFetcher()
 
-    scrape_worker_thread = threading.Thread(target=scrape_all_companies, args=(listing_queue,))
-    parse_worker_pool_thread = threading.Thread(target=parse_all_listings, args=(listing_queue,))
+    scrape_worker_thread = threading.Thread(target=scrape_all_companies, args=(listing_queue, shared_fetcher))
+    parse_worker_pool_thread = threading.Thread(target=parse_all_listings, args=(listing_queue, shared_fetcher))
 
     # Start workers
     scrape_worker_thread.start()
