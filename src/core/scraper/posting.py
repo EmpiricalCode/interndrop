@@ -86,7 +86,7 @@ class PostingScraper:
             url=url,
             term=term_str,
             categories=posting_dict.get("categories", []),
-            company=posting_dict.get("company", company_name) or company_name,
+            company=company_name,
             date=int(time.time())
         )
 
