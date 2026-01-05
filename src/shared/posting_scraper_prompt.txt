@@ -6,7 +6,7 @@ Rules:
 - Prefer normalized values when possible:
     - For "work_arrangement", value must be one of: "remote", "hybrid", "onsite". If you cannot determine this field, set it to an empty string "".
     - For "term", the value should be a list of zero or more of the following: "spring", "winter", "fall". This field describes when the internship starts. There could be multiple starting dates.
-        - Spring term starts in May
+        - Spring term starts in May (NOTE: If you see "summer", that means SPRING. Both "spring" and "summer" should correspond to term "spring").
         - Fall term starts in September 
         - Winter term starts in January
 - Try to extract a clear, concise "title".

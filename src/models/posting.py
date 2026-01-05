@@ -11,7 +11,7 @@ class Posting:
     salary: int
     salary_type: str
     url: str
-    term: str
+    term: list[str]
     categories: list[str]
     company: str
     id: str = ""
@@ -20,6 +20,7 @@ class Posting:
     def __str__(self) -> str:
         categories_str = ", ".join(self.categories) if self.categories else "None"
         location_str = ", ".join(self.location) if self.location else "None"
+        term_str = ", ".join(self.term) if self.term else "None"
         salary_str = f"${self.salary} ({self.salary_type})" if self.salary > 0 else f"Not specified ({self.salary_type})"
 
         # Convert timestamp to EST date
@@ -34,7 +35,7 @@ class Posting:
             f"  location: [{location_str}]\n"
             f"  work_arrangement: {self.work_arrangement}\n"
             f"  salary: {salary_str}\n"
-            f"  term: {self.term}\n"
+            f"  term: {term_str}\n"
             f"  categories: [{categories_str}]\n"
             f"  url: {self.url}\n"
             f"  date: {date_str}\n"

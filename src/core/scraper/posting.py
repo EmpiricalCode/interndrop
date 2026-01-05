@@ -75,7 +75,6 @@ class PostingScraper:
 
         # Handle term which should be a list in the prompt response
         term = posting_dict.get("term", [])
-        term_str = ", ".join(term) if isinstance(term, list) else str(term)
 
         posting = Posting(
             title=posting_dict.get("title", ""),
@@ -84,7 +83,7 @@ class PostingScraper:
             salary=salary_amount,
             salary_type=salary_type,
             url=url,
-            term=term_str,
+            term=term,
             categories=posting_dict.get("categories", []),
             company=company_name,
             date=int(time.time())
@@ -139,7 +138,7 @@ class PostingScraper:
             salary=0,  # No salary info available from listing
             salary_type="none",  # No salary info available from listing
             url=listing.href or "",
-            term="",  # No term info available from listing
+            term=[],  # No term info available from listing
             categories=[],  # No categories available from listing
             company=listing.company,
             id=listing.hash(),
