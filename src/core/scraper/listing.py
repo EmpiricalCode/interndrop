@@ -120,14 +120,14 @@ class ListingScraper:
                     formatted_url = company.url
                 else:
                     formatted_url = f"{company.url}&{company.page_query_param}={i}"
-                print(f"Scraping page {i}: {formatted_url}\n")
+                print(f"{company.name}: Scraping page {i}: {formatted_url}\n")
 
                 # Fetch the cleaned text content of the page
                 cleaned_text = self.fetcher.fetch(formatted_url)
 
                 # If the fetched text is empty or indicates no results, stop.
                 if not cleaned_text:
-                    print("No more content found. Stopping.")
+                    print(f"{company.name}: No more content found. Stopping.")
                     break
 
                 # Parse the text to get a list of Listing objects
@@ -135,12 +135,12 @@ class ListingScraper:
 
                 # If parsing returns an empty list, it means no more jobs were found
                 if not jobs_on_page:
-                    print(f"Page {i} returned no jobs. Stopping.")
+                    print(f"{company.name}: Page {i} returned no jobs. Stopping.")
                     break
 
                 # Check for similarity with the last page's content to detect duplicate pages
                 if i > 1 and self.calculate_similarity(cleaned_text, last_cleaned_text) > 0.98:
-                    print(f"Page {i} is too similar to the previous page. Stopping.")
+                    print(f"{company.name}: Page {i} is too similar to the previous page. Stopping.")
                     break
                 last_cleaned_text = cleaned_text
 
@@ -152,20 +152,20 @@ class ListingScraper:
 
                 # If all jobs on the current page have been seen before, stop
                 if current_page_titles.issubset(seen_job_titles):
-                    print(f"Page {i} contains only duplicate jobs. Stopping.")
+                    print(f"{company.name}: Page {i} contains only duplicate jobs. Stopping.")
                     break
 
                 # Add the found jobs to the aggregate list and update seen titles
                 all_jobs.extend(jobs_on_page)
                 seen_job_titles.update(current_page_titles)
 
-                print(f"Found {len(jobs_on_page)} jobs on page {i}.\n")
+                print(f"{company.name}: Found {len(jobs_on_page)} jobs on page {i}.\n")
 
                 i += 1
 
             except Exception as e:
                 # If any error occurs (e.g., network error, page not found), stop.
-                print(f"An error occurred on page {i}: {e}. Stopping.")
+                print(f"{company.name}: An error occurred on page {i}: {e}. Stopping.")
                 break
 
         return all_jobs
