@@ -117,7 +117,7 @@ def parse_all_listings(listing_queue: queue.Queue, fetcher: BaseFetcher):
 
         # Check if posting ID already exists in database
         if posting_id in existing_posting_ids:
-            print(f"${company.name}: ✓ Posting already exists: {posting_id}")
+            print(f"{company.name}: ✓ Posting already exists: {posting_id}")
         else:
             # Parse the listing and create new posting
             parse_listing(company, listing, fetcher, posting_repo)
@@ -129,7 +129,7 @@ def parse_all_listings(listing_queue: queue.Queue, fetcher: BaseFetcher):
     if posting_ids_to_delete:
         print(f"\nDeleting {len(posting_ids_to_delete)} postings that are no longer in listings...")
         deleted_count = posting_repo.bulk_delete(posting_ids_to_delete)
-        print(f"${company.name}: ✓ Deleted {deleted_count} postings from database")
+        print(f"{company.name}: ✓ Deleted {deleted_count} postings from database")
 
     print("All parsing tasks completed.")
 
@@ -154,10 +154,10 @@ def parse_listing(company: Company, listing: Listing, fetcher: BaseFetcher, post
 
         # Create the posting in the database
         posting_repo.create(posting)
-        print(f"${company.name}: ✓ Created new posting: {posting.id}")
+        print(f"{company.name}: ✓ Created new posting: {posting.id}")
 
     except Exception as e:
-        print(f"${company.name}: ✗ Error parsing {listing.title}: {e}")
+        print(f"{company.name}: ✗ Error parsing {listing.title}: {e}")
 
 if __name__ == "__main__":
     # Create single shared fetcher instance
