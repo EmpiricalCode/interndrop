@@ -67,6 +67,7 @@ class ListingScraper:
             listing = Listing(
                 title=job_dict.get("title", ""),
                 location=job_dict.get("location", []),
+                term=job_dict.get("term", []),
                 department=job_dict.get("department", ""),
                 work_arrangement=job_dict.get("work_arrangement", ""),
                 href=job_dict.get("href", ""),

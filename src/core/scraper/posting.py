@@ -138,7 +138,7 @@ class PostingScraper:
             salary=0,  # No salary info available from listing
             salary_type="none",  # No salary info available from listing
             url=listing.href or "",
-            term=[],  # No term info available from listing
+            term=listing.term,
             categories=[],  # No categories available from listing
             company=listing.company,
             id=listing.hash(),

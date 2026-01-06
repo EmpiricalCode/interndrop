@@ -49,7 +49,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "company_name",
         nargs="?",
-        default="Citadel",
+        default="Roblox",
         help="Name of the company to scrape (defaults to Stripe)"
     )
 

@@ -7,6 +7,11 @@ Rules:
 - Populate fields with extracted text only (strip HTML tags). If a field cannot be determined, set it to an empty string "".
 - Prefer normalized values when possible:
     - For "work_arrangement", fields must be one of: "remote", "hybrid", "onsite". If you cannot determine this field, leave it blank.
+- For "term", the value should be a list of zero or more of the following: "spring", "winter", "fall". This field describes when the internship starts. There could be multiple starting dates.
+    - Spring term starts in May (NOTE: If you see "summer", that means SPRING. Both "spring" and "summer" should correspond to term "spring").
+    - Fall term starts in September 
+    - Winter term starts in January
+    - A term can only be one of these three. If no term information is provided, leave an empty array [].
 - Try to extract a clear, concise "title".
 - Location MUST be a list, even if there is only one location.
 - Be thorough: scan all content, headings, meta, attributes, links, lists, tables, and repeated templates.
@@ -25,6 +30,7 @@ Example output shape:
     {
         "title": "Software Engineering Intern",
         "location": ["San Francisco, CA", "New York, NY"],
+        "term" : ["winter", "spring"],
         "department": "Engineering",
         "work_arrangement": "hybrid",
         "href": "https://jobs.ashbyhq.com/ramp/67fadb77-43d8-4449-954b-d4cf2c6d3b8b",
