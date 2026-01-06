@@ -74,7 +74,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "company_name",
         nargs="?",
-        default="Ramp",
+        default="Citadel",
         help="Name of the company to scrape (defaults to Ramp)"
     )
 
