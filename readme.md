@@ -25,12 +25,6 @@
 - Affirm ([greenhouse pages](https://job-boards.greenhouse.io/affirm/?keyword=intern) (pages, ?page=)
 - Whatnot (https://jobs.ashbyhq.com/whatnot/) (no pages)
 
-# Not so nice:
-- Lockheed (Weird pages, sometimes gets 50+ jobs per page and sometimes not. Ended up with 150 scraped jobs even though )
-- Plaid (Uses ripplematch which is weird)
-- Brex (although they just might not have their internships on here)
-- Snowflake (their intern stories are getting picked up as jobs)
-
 # Unknown:
 - OpenAI (no internships)
 - Microsoft
@@ -39,6 +33,4 @@
 
 # TODO:
 - Verify robots.txt for each company (maybe use LLMs for this lol)
-- Handle some sort of 404 error or other problem causing no jobs to be scraped (we shouldn't record this as no jobs present, since if the site is down the jobs probably still exist)
-- Handle not so nice scenarios
-- Turn down LLM temperature
+- Handle some sort of 404 error or other problem causing no jobs to be scraped (we shouldn't record this as no jobs present, since if the site is down the jobs probably still exist
