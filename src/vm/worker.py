@@ -92,11 +92,11 @@ def parse_all_listings(listing_queue: queue.Queue, fetcher: BaseFetcher):
     # Create repository
     posting_repo = PostingRepository()
 
-    # Fetch all existing posting IDs from database
-    print("Fetching all existing posting IDs from database...")
+    # Fetch all existing postings from database
+    print("Fetching all existing postings from database...")
     existing_postings = posting_repo.get_all()
-    existing_posting_ids = {posting.id for posting in existing_postings}
-    del existing_postings  # Free memory - we only need the IDs
+    existing_postings_map = {posting.id: posting for posting in existing_postings}
+    existing_posting_ids = set(existing_postings_map.keys())
     print(f"Found {len(existing_posting_ids)} existing postings in database\n")
 
     # Track all listing IDs that were processed
@@ -127,9 +127,12 @@ def parse_all_listings(listing_queue: queue.Queue, fetcher: BaseFetcher):
     # Delete postings that were not in the processed list
     posting_ids_to_delete = [posting_id for posting_id in existing_posting_ids if posting_id not in processed_listing_ids]
     if posting_ids_to_delete:
-        print(f"\nDeleting {len(posting_ids_to_delete)} postings that are no longer in listings...")
+        print(f"\nDeleting {len(posting_ids_to_delete)} postings that are no longer in listings:")
+        for posting_id in posting_ids_to_delete:
+            posting = existing_postings_map[posting_id]
+            print(f"  - {posting.company}: {posting.title}")
         deleted_count = posting_repo.bulk_delete(posting_ids_to_delete)
-        print(f"{company.name}: ✓ Deleted {deleted_count} postings from database")
+        print(f"✓ Deleted {deleted_count} postings from database")
 
     print("All parsing tasks completed.")
 
