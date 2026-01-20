@@ -8,6 +8,7 @@ class Company:
     url: str
     paged: bool
     page_query_param: Optional[str]
+    id: Optional[str] = None
 
     def __str__(self) -> str:
         return self.name
